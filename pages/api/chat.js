@@ -135,7 +135,7 @@ const PRODUCT_CATALOG = [
   }
 ];
 
-// 智能多产品匹配函数
+// ========== 匹配函数：根据用户输入，返回最多3个相关产品 ==========
 function getMatchedProducts(userMsg) {
   userMsg = userMsg.toLowerCase();
   const results = [];
@@ -143,21 +143,21 @@ function getMatchedProducts(userMsg) {
     for (const kw of prod.keywords) {
       if (userMsg.includes(kw.toLowerCase())) {
         results.push(prod);
-        break;
+        break; // 命中1次就够了，不重复推荐
       }
     }
   }
-  // 最多只推荐3个（你可自定义数量）
+  // 最多推荐3个
   return results.slice(0, 3);
 }
 
-// 极简风格卡片
+// ========== 商品卡片极简富文本HTML ==========
 function getProductCard(product) {
   return `
-    <div style="display:flex;align-items:center;border:1px solid #f3e1f7;border-radius:10px;padding:12px 10px;margin:14px 0 8px 0;background:#fafaff;gap:12px;">
-      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;">
+    <div style="display:flex;align-items:center;border:1px solid #eee;border-radius:12px;padding:12px;margin:14px 0;background:#fafaff;">
+      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;margin-right:14px;">
       <div>
-        <div style="font-weight:600;font-size:15px;">${product.name}</div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${product.name}</div>
         <div style="font-size:13px;color:#555;margin-bottom:4px;">${product.desc}</div>
         <a href="${product.url}" target="_blank" style="font-size:13px;color:#e91e63;text-decoration:underline;">See Details &gt;</a>
       </div>
@@ -165,21 +165,31 @@ function getProductCard(product) {
   `;
 }
 
+// ========== 主 handler ==========
+
 export default async function handler(req, res) {
   try {
-    const { prompt } = JSON.parse(req.body);
+    // 支持 body 是 JSON 字符串或对象
+    const { prompt } = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    if (!prompt) {
+      res.status(400).json({ reply: "Missing prompt" });
+      return;
+    }
 
-    // 环境变量API Key
     const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      res.status(500).json({ reply: "Server Error: Missing OpenAI API Key" });
+      return;
+    }
 
-    // 系统提示语定制AI风格
-    const systemPrompt = "You are a professional sex toy advisor for vivevibe.com. Recommend relevant products and keep a fun, young tone. Always use English.";
+    // System Prompt：定制AI语气与行为
+    const systemPrompt = "You are a professional sex toy advisor for vivevibe.com. Reply in English, keep a fun Gen Z tone, and recommend relevant products from the store when appropriate. If you know the user's intent, always recommend at least one matching product by its real name.";
     const messages = [
       { role: "system", content: systemPrompt },
       { role: "user", content: prompt }
     ];
 
-    // 调用OpenAI获得基础AI回复
+    // OpenAI API请求
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -187,17 +197,25 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini", // 如不行可以先用 "gpt-3.5-turbo"
         messages
       })
     });
+
     const data = await openaiRes.json();
+    console.log("openaiRes:", data); // 日志调试用，可删
 
-    let reply = data.choices && data.choices[0] && data.choices[0].message.content
-      ? data.choices[0].message.content
-      : "Sorry, the AI is taking a break. Try again soon!";
+    // AI回复判定
+    let reply;
+    if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+      reply = data.choices[0].message.content;
+    } else if (data.error && data.error.message) {
+      reply = "AI Error: " + data.error.message;
+    } else {
+      reply = "Sorry, the AI is taking a break. Try again soon!";
+    }
 
-    // 多产品智能推荐
+    // ========== 多产品智能推荐 ==========
     const matchedProducts = getMatchedProducts(prompt);
     if (matchedProducts.length > 0) {
       reply += `<div style="margin-top:18px;font-weight:600;font-size:15px;">Recommended for you:</div>`;
@@ -206,9 +224,12 @@ export default async function handler(req, res) {
       });
     }
 
+    // ========== 输出 ==========
     res.status(200).json({ reply });
 
   } catch (err) {
-    res.status(500).json({ reply: "Server Error: " + err.message });
+    console.error("Server error:", err);
+    res.status(500).json({ reply: "Server Error: " + (err.message || "unknown error") });
   }
 }
+
