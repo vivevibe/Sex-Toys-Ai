@@ -154,10 +154,10 @@ function getMatchedProducts(userMsg) {
 // 极简风格卡片
 function getProductCard(product) {
   return `
-    <div style="display:flex;align-items:center;border:1px solid #eee;border-radius:12px;padding:12px;margin:14px 0;background:#fafaff;">
-      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;margin-right:14px;">
+    <div style="display:flex;align-items:center;border:1px solid #f3e1f7;border-radius:10px;padding:12px 10px;margin:14px 0 8px 0;background:#fafaff;gap:12px;">
+      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;">
       <div>
-        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${product.name}</div>
+        <div style="font-weight:600;font-size:15px;">${product.name}</div>
         <div style="font-size:13px;color:#555;margin-bottom:4px;">${product.desc}</div>
         <a href="${product.url}" target="_blank" style="font-size:13px;color:#e91e63;text-decoration:underline;">See Details &gt;</a>
       </div>
