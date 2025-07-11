@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     const { prompt } = JSON.parse(req.body);
 
     // 你的专属OpenAI API Key
-    const apiKey = "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";
+    const apiKey = "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";
 
     // 调用 OpenAI GPT-4o-mini
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
