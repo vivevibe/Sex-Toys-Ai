@@ -24,7 +24,7 @@ function getProductCard({ name, img, desc, url }) {
       background: "#fff",
       boxShadow: "0 3px 16px #f3f3f5cc",
       width: "100%", /* Ensures the card takes full width */
-      maxWidth: 540, /* Controls the max width to avoid too large cards */
+      maxWidth: 540, /* Prevents the card from growing too wide */
       boxSizing: "border-box" /* Ensures padding and borders are included in the width */
     }}>
       <img src={img} alt={name}
@@ -63,12 +63,12 @@ function LoadingDots() {
       <span style={{
         display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#b8b8c9", animation: "dotflash 1.2s 0.6s infinite"
       }}></span>
-      <style>{
+      <style>{`
         @keyframes dotflash {
           0%, 80%, 100% { opacity: .4; }
           40% { opacity: 1; }
         }
-      }</style>
+      `}</style>
     </span>
   );
 }
@@ -128,12 +128,10 @@ export default function Home() {
       });
       const data = await res.json();
       setMessages(msgs =>
-        [...msgs, { role: "assistant", content: data.reply }]
-      );
+        [...msgs, { role: "assistant", content: data.reply }])
     } catch {
       setMessages(msgs =>
-        [...msgs, { role: "assistant", content: "⚠️ Network error, try again." }]
-      );
+        [...msgs, { role: "assistant", content: "⚠️ Network error, try again." }])
     }
     setLoading(false);
     setPending(false);
@@ -144,12 +142,12 @@ export default function Home() {
       <div className="chatgpt-chat-body">
         <div className="chatgpt-chat-content">
           {messages.map((msg, i) => (
-            <div key={i} className={chatgpt-row ${msg.role === "user" ? "chatgpt-row-user" : "chatgpt-row-ai"}}>
+            <div key={i} className={`chatgpt-row ${msg.role === "user" ? "chatgpt-row-user" : "chatgpt-row-ai"}`}>
               {msg.role === "assistant" && (
                 <img src={BOT_AVATAR} alt="Bot" className="chatgpt-avatar" />
               )}
               <div
-                className={chatgpt-bubble chatgpt-bubble-${msg.role}}
+                className={`chatgpt-bubble chatgpt-bubble-${msg.role}`}
                 style={msg.role === "assistant" ? { background: "#fff" } : {}}
               >
                 {msg.role === "assistant"
@@ -192,7 +190,8 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
-      <style jsx global>{
+
+      <style jsx global>{`
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
           min-height: 100vh;
@@ -213,6 +212,7 @@ export default function Home() {
           max-width: 710px;
           margin: 0 auto;
           padding: 28px 6px 22px 6px;
+          overflow-x: hidden; /* 禁止横向滚动 */
         }
         .chatgpt-row {
           display: flex;
@@ -300,8 +300,6 @@ export default function Home() {
           justify-content: center;
           cursor: pointer;
           box-shadow: 0 2px 8px #f2ddea33;
-          opacity: 1;
-          transition: opacity 0.2s;
         }
         .chatgpt-sendbtn:disabled {
           opacity: 0.45;
@@ -317,7 +315,7 @@ export default function Home() {
           .chatgpt-bubble{font-size:14.5px;padding:8px 9px;border-radius:10px;}
           .chatgpt-chat-content{padding:8px 1vw 12vw 1vw;}
         }
-      }</style>
+      `}</style>
     </div>
   );
 }
