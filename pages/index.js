@@ -24,7 +24,7 @@ function getProductCard({ name, img, desc, url }) {
       background: "#fff",
       boxShadow: "0 3px 16px #f3f3f5cc",
       width: "100%", /* Ensures the card takes full width */
-      maxWidth: 540, /* Prevents the card from growing too wide */
+      maxWidth: 540, /* Controls the max width to avoid too large cards */
       boxSizing: "border-box" /* Ensures padding and borders are included in the width */
     }}>
       <img src={img} alt={name}
@@ -128,10 +128,12 @@ export default function Home() {
       });
       const data = await res.json();
       setMessages(msgs =>
-        [...msgs, { role: "assistant", content: data.reply }])
+        [...msgs, { role: "assistant", content: data.reply }]
+      );
     } catch {
       setMessages(msgs =>
-        [...msgs, { role: "assistant", content: "⚠️ Network error, try again." }])
+        [...msgs, { role: "assistant", content: "⚠️ Network error, try again." }]
+      );
     }
     setLoading(false);
     setPending(false);
@@ -190,7 +192,6 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
-
       <style jsx global>{`
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
@@ -212,7 +213,6 @@ export default function Home() {
           max-width: 710px;
           margin: 0 auto;
           padding: 28px 6px 22px 6px;
-          overflow-x: hidden; /* 禁止横向滚动 */
         }
         .chatgpt-row {
           display: flex;
@@ -300,6 +300,8 @@ export default function Home() {
           justify-content: center;
           cursor: pointer;
           box-shadow: 0 2px 8px #f2ddea33;
+          opacity: 1;
+          transition: opacity 0.2s;
         }
         .chatgpt-sendbtn:disabled {
           opacity: 0.45;
