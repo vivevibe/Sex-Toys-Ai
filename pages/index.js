@@ -110,9 +110,8 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-  // 去掉自动滚动到底部
-  // chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
-}, [messages, loading]); // 不再自动滚动到底部
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); // 自动滚动到页面底部
+  }, [messages, loading]);
 
   async function handleSend(e) {
     e && e.preventDefault();
