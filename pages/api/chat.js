@@ -3171,7 +3171,21 @@ const PRODUCT_CATALOG = [
   }
 ];
 
-// ========== 匹配函数：根据用户输入，返回最多3个相关产品 ==========
+// ========== 生成产品卡片的函数 ========== 
+function getProductCard(product) {
+  return `
+    <div style="display:flex;flex-direction: row;align-items: center;border: 1px solid #eee;border-radius: 16px;padding: 16px;margin: 16px 0;background: #fafaff;max-width: 100%;overflow: hidden;">
+      <img src="${product.img}" alt="${product.name}" style="width: 100px;height: 100px;object-fit: cover;border-radius: 12px;margin-right: 16px;">
+      <div style="flex-grow: 1;overflow: hidden;">
+        <div style="font-weight:600;font-size:18px;margin-bottom: 8px;">${product.name}</div>
+        <div style="font-size:14px;color:#555;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">${product.desc}</div>
+        <a href="${product.url}" target="_blank" style="font-size:14px;color:#e91e63;text-decoration: underline;">See Details &gt;</a>
+      </div>
+    </div>
+  `;
+}
+
+// ========== 获取匹配的产品 ========== 
 function getMatchedProducts(userMsg) {
   userMsg = userMsg.toLowerCase();
   const results = [];
@@ -3179,33 +3193,16 @@ function getMatchedProducts(userMsg) {
     for (const kw of prod.keywords) {
       if (userMsg.includes(kw.toLowerCase())) {
         results.push(prod);
-        break; // 命中1次就够了，不重复推荐
+        break; // 命中一个关键词就跳出，避免重复推荐
       }
     }
   }
-  // 最多推荐3个
-  return results.slice(0, 3);
+  return results.slice(0, 3); // 返回最多3个匹配的产品
 }
 
-// ========== 商品卡片极简富文本HTML ==========
-function getProductCard(product) {
-  return `
-    <div style="display:flex;align-items:center;border:1px solid #eee;border-radius:12px;padding:12px;margin:14px 0;background:#fafaff;">
-      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;margin-right:14px;">
-      <div>
-        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${product.name}</div>
-        <div style="font-size:13px;color:#555;margin-bottom:4px;">${product.desc}</div>
-        <a href="${product.url}" target="_blank" style="font-size:13px;color:#e91e63;text-decoration:underline;">See Details &gt;</a>
-      </div>
-    </div>
-  `;
-}
-
-// ========== 主 handler ==========
-
+// ========== 主 handler ========== 
 export default async function handler(req, res) {
   try {
-    // 支持 body 是 JSON 字符串或对象
     const { prompt } = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     if (!prompt) {
       res.status(400).json({ reply: "Missing prompt" });
@@ -3218,14 +3215,14 @@ export default async function handler(req, res) {
       return;
     }
 
-    // System Prompt：定制AI语气与行为
+    // 定制AI的回复风格
     const systemPrompt = "You are a professional sex toy advisor for vivevibe.com. Reply in English, keep a fun Gen Z tone, and recommend relevant products from the store when appropriate. If you know the user's intent, always recommend at least one matching product by its real name.";
     const messages = [
       { role: "system", content: systemPrompt },
       { role: "user", content: prompt }
     ];
 
-    // OpenAI API请求
+    // 请求 OpenAI API 获取回复
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -3233,15 +3230,15 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // 如不行可以先用 "gpt-3.5-turbo"
+        model: "gpt-4o-mini", // 如果不行可以先用 "gpt-3.5-turbo"
         messages
       })
     });
 
     const data = await openaiRes.json();
-    console.log("openaiRes:", data); // 日志调试用，可删
+    console.log("openaiRes:", data); // 调试用日志，可删除
 
-    // AI回复判定
+    // 判断AI的回复
     let reply;
     if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
       reply = data.choices[0].message.content;
@@ -3251,16 +3248,15 @@ export default async function handler(req, res) {
       reply = "Sorry, the AI is taking a break. Try again soon!";
     }
 
-    // ========== 多产品智能推荐 ==========
+    // 获取与用户输入匹配的产品
     const matchedProducts = getMatchedProducts(prompt);
     if (matchedProducts.length > 0) {
       reply += `<div style="margin-top:18px;font-weight:600;font-size:15px;">Recommended for you:</div>`;
       matchedProducts.forEach(prod => {
-        reply += getProductCard(prod);
+        reply += getProductCard(prod); // 渲染产品卡片
       });
     }
 
-    // ========== 输出 ==========
     res.status(200).json({ reply });
 
   } catch (err) {
