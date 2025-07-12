@@ -35,7 +35,7 @@ function LoadingDots() {
   );
 }
 
-// 大卡片（和上面一样）
+// 大卡片样式
 function ProductCard({ name, img, desc, url }) {
   return (
     <div style={{
@@ -108,6 +108,7 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
+    // 每次消息变化，滚动到底部
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
