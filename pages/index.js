@@ -2,99 +2,12 @@ import { useState, useRef, useEffect } from "react";
 
 const BOT_AVATAR = "https://cdn.shopify.com/s/files/1/0940/0539/5765/files/logo.png?v=1752330541";
 
-// 飞机icon
 function SendIcon({ size = 28 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="12" fill="#FD8291" />
       <path d="M7 12l7-4v8l-7-4z" fill="#fff" />
     </svg>
-  );
-}
-
-// 大卡片（和上面一样）
-function ProductCard({ name, img, desc, url }) {
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 22,
-      border: "1.5px solid #eaeaea",
-      borderRadius: 18,
-      padding: "20px 26px",
-      margin: "30px 0",
-      background: "#fff",
-      boxShadow: "0 3px 16px #f3f3f5cc",
-      minWidth: 0, maxWidth: 540
-    }}>
-      <img src={img} alt={name}
-        style={{
-          width: 98, height: 98, objectFit: "cover",
-          borderRadius: 15, boxShadow: "0 2px 12px #f3e7ed55", background: "#fafafc"
-        }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontWeight: 800, fontSize: 19, color: "#ea3c77",
-          marginBottom: 7, letterSpacing: 0.5
-        }}>{name}</div>
-        <div style={{
-          color: "#444", fontSize: 15.2, marginBottom: 14, lineHeight: 1.65, fontWeight: 400
-        }}>{desc}</div>
-        <a href={url} target="_blank" rel="noopener"
-          style={{
-            fontWeight: 700, color: "#FD8291", fontSize: 15.5,
-            textDecoration: "underline"
-          }}>See Details &gt;</a>
-      </div>
-    </div>
-  );
-}
-
-// 插入产品卡
-function renderWithProductCards(html) {
-  const regex = /<div class="product-card" data-product='([^']+)'><\/div>/g;
-  let lastIndex = 0, match, output = [];
-  let key = 0;
-  while ((match = regex.exec(html))) {
-    if (match.index > lastIndex) {
-      output.push(
-        <span key={key++}
-          dangerouslySetInnerHTML={{ __html: html.slice(lastIndex, match.index) }} />
-      );
-    }
-    try {
-      const prod = JSON.parse(match[1]);
-      output.push(<ProductCard key={key++} {...prod} />);
-    } catch (e) {}
-    lastIndex = regex.lastIndex;
-  }
-  if (lastIndex < html.length) {
-    output.push(
-      <span key={key++}
-        dangerouslySetInnerHTML={{ __html: html.slice(lastIndex) }} />
-    );
-  }
-  return output;
-}
-
-// loading动画
-function LoadingDots() {
-  return (
-    <span style={{ display: "inline-block", width: 22, verticalAlign: "middle" }}>
-      <span style={{
-        display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#b8b8c9", marginRight: 2, animation: "dotflash 1.2s infinite"
-      }}></span>
-      <span style={{
-        display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#b8b8c9", marginRight: 2, animation: "dotflash 1.2s 0.3s infinite"
-      }}></span>
-      <span style={{
-        display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#b8b8c9", animation: "dotflash 1.2s 0.6s infinite"
-      }}></span>
-      <style>{`
-        @keyframes dotflash {
-          0%, 80%, 100% { opacity: .4; }
-          40% { opacity: 1; }
-        }
-      `}</style>
-    </span>
   );
 }
 
@@ -108,7 +21,7 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); // 自动滚动到底部
   }, [messages, loading]);
 
   async function handleSend(e) {
@@ -139,7 +52,6 @@ export default function Home() {
 
   return (
     <div className="chatgpt-root">
-      {/* 聊天内容区 */}
       <div className="chatgpt-chat-body">
         <div className="chatgpt-chat-content">
           {messages.map((msg, i) => (
@@ -147,13 +59,8 @@ export default function Home() {
               {msg.role === "assistant" && (
                 <img src={BOT_AVATAR} alt="Bot" className="chatgpt-avatar" />
               )}
-              <div
-                className={`chatgpt-bubble chatgpt-bubble-${msg.role}`}
-                style={msg.role === "assistant" ? { background: "#fff" } : {}}
-              >
-                {msg.role === "assistant"
-                  ? renderWithProductCards(msg.content)
-                  : msg.content}
+              <div className={`chatgpt-bubble chatgpt-bubble-${msg.role}`} style={msg.role === "assistant" ? { background: "#fff" } : {}}>
+                {msg.content}
               </div>
               {msg.role === "user" && <div className="chatgpt-avatar-space" />}
             </div>
@@ -170,7 +77,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 输入栏 */}
       <form className="chatgpt-inputbar" onSubmit={handleSend}>
         <input
           className="chatgpt-input"
@@ -192,7 +98,6 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
-      {/* 样式区 */}
       <style jsx global>{`
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
