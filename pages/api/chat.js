@@ -3188,41 +3188,17 @@ function getMatchedProducts(userMsg) {
 }
 
 // ========== 商品卡片极简富文本HTML ==========
-function ProductCard({ name, img, desc, url }) {
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 22,
-      border: "1.5px solid #eaeaea",
-      borderRadius: 18,
-      padding: "20px 26px",
-      margin: "30px 0",
-      background: "#fff",
-      boxShadow: "0 3px 16px #f3f3f5cc",
-      width: "100%", /* Ensures the card takes full width */
-      maxWidth: 540, /* Controls the max width to avoid too large cards */
-      boxSizing: "border-box" /* Ensures padding and borders are included in the width */
-    }}>
-      <img src={img} alt={name}
-        style={{
-          width: "98px", height: "98px", objectFit: "cover",
-          borderRadius: "15px", boxShadow: "0 2px 12px #f3e7ed55", background: "#fafafc"
-        }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontWeight: 800, fontSize: 19, color: "#ea3c77",
-          marginBottom: 7, letterSpacing: 0.5
-        }}>{name}</div>
-        <div style={{
-          color: "#444", fontSize: 15.2, marginBottom: 14, lineHeight: 1.65, fontWeight: 400
-        }}>{desc}</div>
-        <a href={url} target="_blank" rel="noopener"
-          style={{
-            fontWeight: 700, color: "#FD8291", fontSize: 15.5,
-            textDecoration: "underline"
-          }}>See Details &gt;</a>
+function getProductCard(product) {
+  return `
+    <div style="display:flex;align-items:center;border:1px solid #eee;border-radius:12px;padding:12px;margin:14px 0;background:#fafaff;">
+      <img src="${product.img}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;margin-right:14px;">
+      <div>
+        <div style="font-weight:600;font-size:15px;margin-bottom:4px;">${product.name}</div>
+        <div style="font-size:13px;color:#555;margin-bottom:4px;">${product.desc}</div>
+        <a href="${product.url}" target="_blank" style="font-size:13px;color:#e91e63;text-decoration:underline;">See Details &gt;</a>
       </div>
     </div>
-  );
+  `;
 }
 
 // ========== 主 handler ==========
@@ -3292,4 +3268,3 @@ export default async function handler(req, res) {
     res.status(500).json({ reply: "Server Error: " + (err.message || "unknown error") });
   }
 }
-
