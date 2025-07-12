@@ -6,7 +6,7 @@ const BOT_AVATAR = "https://cdn.shopify.com/s/files/1/0940/0539/5765/files/logo.
 function SendIcon({ size = 28 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="12" fill="#19c37d" />
+      <circle cx="12" cy="12" r="12" fill="#FD8291" />
       <path d="M7 12l7-4v8l-7-4z" fill="#fff" />
     </svg>
   );
@@ -40,7 +40,7 @@ function ProductCard({ name, img, desc, url }) {
         }}>{desc}</div>
         <a href={url} target="_blank" rel="noopener"
           style={{
-            fontWeight: 700, color: "#19c37d", fontSize: 15.5,
+            fontWeight: 700, color: "#FD8291", fontSize: 15.5,
             textDecoration: "underline"
           }}>See Details &gt;</a>
       </div>
@@ -257,8 +257,8 @@ export default function Home() {
           transition: background .2s;
         }
         .chatgpt-bubble-user {
-          background: #d2f7e5;
-          color: #20282a;
+          background: #FD8291;
+          color: #fff;
           text-align: right;
         }
         .chatgpt-bubble-ai {
@@ -291,16 +291,16 @@ export default function Home() {
           box-shadow: 0 2px 8px #f6f6fa33;
         }
         .chatgpt-sendbtn {
-          background: #19c37d;
+          background: #FD8291;
           border: none;
           border-radius: 50%;
-          width: 44px;
-          height: 44px;
+          width: 52px;
+          height: 52px;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          box-shadow: 0 2px 8px #b9e9d7a0;
+          box-shadow: 0 2px 8px #f2ddea33;
           opacity: 1;
           transition: opacity 0.2s;
         }
