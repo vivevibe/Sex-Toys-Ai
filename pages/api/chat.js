@@ -3200,6 +3200,20 @@ function getMatchedProducts(userMsg) {
   return results.slice(0, 3); // 返回最多3个匹配的产品
 }
 
+// ========== 生成产品卡片的函数 ========== 
+function getProductCard(product) {
+  return `
+    <div class="product-card">
+      <img src="${product.img}" alt="${product.name}">
+      <div class="content">
+        <div class="product-name">${product.name}</div>
+        <div class="product-desc">${product.desc}</div>
+        <a href="${product.url}" target="_blank" class="view-details">See Details &gt;</a>
+      </div>
+    </div>
+  `;
+}
+
 // ========== 主 handler ========== 
 export default async function handler(req, res) {
   try {
