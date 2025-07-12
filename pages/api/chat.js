@@ -3174,11 +3174,11 @@ const PRODUCT_CATALOG = [
 // ========== 生成产品卡片的函数 ========== 
 function getProductCard(product) {
   return `
-    <div style="display: flex; flex-direction: row; align-items: center; border: 1px solid #eee; border-radius: 16px; padding: 16px; margin: 16px 0; background: #fafaff; max-width: 100%; box-sizing: border-box; overflow: hidden; width: 100%; word-wrap: break-word;">
-      <img src="${product.img}" alt="${product.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; margin-right: 16px; flex-shrink: 0;">
+    <div style="display: flex; flex-direction: row; align-items: center; border: 1px solid #eee; border-radius: 16px; padding: 16px; margin: 16px 0; background: #fafaff; max-width: 100%; box-sizing: border-box; overflow: hidden;">
+      <img src="${product.img}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; margin-right: 16px; flex-shrink: 0;">
       <div style="flex-grow: 1; overflow: hidden;">
-        <div style="font-weight:600; font-size:18px; margin-bottom: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: calc(100% - 100px);">${product.name}</div>
-        <div style="font-size:14px; color:#555; margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: calc(100% - 100px);">${product.desc}</div>
+        <div style="font-weight:600; font-size:18px; margin-bottom: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">${product.name}</div>
+        <div style="font-size:14px; color:#555; margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.desc}</div>
         <a href="${product.url}" target="_blank" style="font-size:14px; color:#e91e63; text-decoration: underline;">See Details &gt;</a>
       </div>
     </div>
@@ -3198,20 +3198,6 @@ function getMatchedProducts(userMsg) {
     }
   }
   return results.slice(0, 3); // 返回最多3个匹配的产品
-}
-
-// ========== 生成产品卡片的函数 ========== 
-function getProductCard(product) {
-  return `
-    <div class="product-card">
-      <img src="${product.img}" alt="${product.name}">
-      <div class="content">
-        <div class="product-name">${product.name}</div>
-        <div class="product-desc">${product.desc}</div>
-        <a href="${product.url}" target="_blank" class="view-details">See Details &gt;</a>
-      </div>
-    </div>
-  `;
 }
 
 // ========== 主 handler ========== 
