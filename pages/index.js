@@ -24,7 +24,7 @@ function getProductCard({ name, img, desc, url }) {
       background: "#fff",
       boxShadow: "0 3px 16px #f3f3f5cc",
       width: "100%", /* Ensures the card takes full width */
-      maxWidth: "540px", /* Prevents the card from growing too wide */
+      maxWidth: 540, /* Controls the max width to avoid too large cards */
       boxSizing: "border-box" /* Ensures padding and borders are included in the width */
     }}>
       <img src={img} alt={name}
@@ -63,12 +63,12 @@ function LoadingDots() {
       <span style={{
         display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#b8b8c9", animation: "dotflash 1.2s 0.6s infinite"
       }}></span>
-      <style>{`
+      <style>{
         @keyframes dotflash {
           0%, 80%, 100% { opacity: .4; }
           40% { opacity: 1; }
         }
-      `}</style>
+      }</style>
     </span>
   );
 }
@@ -145,12 +145,12 @@ export default function Home() {
       <div className="chatgpt-chat-body">
         <div className="chatgpt-chat-content">
           {messages.map((msg, i) => (
-            <div key={i} className={`chatgpt-row ${msg.role === "user" ? "chatgpt-row-user" : "chatgpt-row-ai"}`}>
+            <div key={i} className={chatgpt-row ${msg.role === "user" ? "chatgpt-row-user" : "chatgpt-row-ai"}}>
               {msg.role === "assistant" && (
                 <img src={BOT_AVATAR} alt="Bot" className="chatgpt-avatar" />
               )}
               <div
-                className={`chatgpt-bubble chatgpt-bubble-${msg.role}`}
+                className={chatgpt-bubble chatgpt-bubble-${msg.role}}
                 style={msg.role === "assistant" ? { background: "#fff" } : {}}
               >
                 {msg.role === "assistant"
@@ -193,7 +193,7 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
-      <style jsx global>{`
+      <style jsx global>{
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
           min-height: 100vh;
@@ -318,7 +318,7 @@ export default function Home() {
           .chatgpt-bubble{font-size:14.5px;padding:8px 9px;border-radius:10px;}
           .chatgpt-chat-content{padding:8px 1vw 12vw 1vw;}
         }
-      `}</style>
+      }</style>
     </div>
   );
 }
