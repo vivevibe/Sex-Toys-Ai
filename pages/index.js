@@ -46,14 +46,12 @@ function ProductCard({ name, img, desc, url }) {
       margin: "30px 0",
       background: "#fff",
       boxShadow: "0 3px 16px #f3f3f5cc",
-      width: "100%", /* Ensures the card takes full width */
-      maxWidth: 540, /* Controls the max width to avoid too large cards */
-      boxSizing: "border-box" /* Ensures padding and borders are included in the width */
+      minWidth: 0, maxWidth: 540
     }}>
       <img src={img} alt={name}
         style={{
-          width: "98px", height: "98px", objectFit: "cover",
-          borderRadius: "15px", boxShadow: "0 2px 12px #f3e7ed55", background: "#fafafc"
+          width: 98, height: 98, objectFit: "cover",
+          borderRadius: 15, boxShadow: "0 2px 12px #f3e7ed55", background: "#fafafc"
         }} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
@@ -73,6 +71,33 @@ function ProductCard({ name, img, desc, url }) {
   );
 }
 
+// 插入产品卡
+function renderWithProductCards(html) {
+  const regex = /<div class="product-card" data-product='([^']+)'><\/div>/g;
+  let lastIndex = 0, match, output = [];
+  let key = 0;
+  while ((match = regex.exec(html))) {
+    if (match.index > lastIndex) {
+      output.push(
+        <span key={key++}
+          dangerouslySetInnerHTML={{ __html: html.slice(lastIndex, match.index) }} />
+      );
+    }
+    try {
+      const prod = JSON.parse(match[1]);
+      output.push(<ProductCard key={key++} {...prod} />);
+    } catch (e) {}
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < html.length) {
+    output.push(
+      <span key={key++}
+        dangerouslySetInnerHTML={{ __html: html.slice(lastIndex) }} />
+    );
+  }
+  return output;
+}
+
 export default function Home() {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi, I’m your AI toy advisor 👋<br>Ask me anything about sex toys, and I’ll recommend something real." }
@@ -83,7 +108,8 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); // 自动滚动到页面底部
+    // 每次消息变化，滚动到底部
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   async function handleSend(e) {
@@ -165,7 +191,6 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
-
       <style jsx global>{`
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
