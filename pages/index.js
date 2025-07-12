@@ -83,8 +83,7 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    // 每次消息变化，滚动到底部
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); // 自动滚动到页面底部
   }, [messages, loading]);
 
   async function handleSend(e) {
@@ -166,6 +165,7 @@ export default function Home() {
           <SendIcon />
         </button>
       </form>
+
       <style jsx global>{`
         body,html,#__next{margin:0;padding:0;height:100%;background:#fff;}
         .chatgpt-root {
