@@ -24,7 +24,7 @@ function getProductCard({ name, img, desc, url }) {
       background: "#fff",
       boxShadow: "0 3px 16px #f3f3f5cc",
       width: "100%", /* Ensures the card takes full width */
-      maxWidth: 540, /* Controls the max width to avoid too large cards */
+      maxWidth: "540px", /* Prevents the card from growing too wide */
       boxSizing: "border-box" /* Ensures padding and borders are included in the width */
     }}>
       <img src={img} alt={name}
@@ -110,8 +110,9 @@ export default function Home() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); // 自动滚动到页面底部
-  }, [messages, loading]);
+  // 去掉自动滚动到底部
+  // chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
+}, [messages, loading]); // 不再自动滚动到底部
 
   async function handleSend(e) {
     e && e.preventDefault();
